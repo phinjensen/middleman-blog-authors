@@ -4,6 +4,8 @@ require "middleman-core"
 class BlogAuthors < ::Middleman::Extension
   option :author_path, "authors/:author.html", "Path to the individual author pages"
   option :author_template, "author.html", "Template for the individual author pages"
+  option :per_page, 100, "Posts to show per page"
+  option :page_link, "page/{num}", "Path for pages"
   expose_to_application blog_authors_options: :options
   expose_to_application blog_authors_data: :blog_authors_data
   attr_reader :blog_authors_options
@@ -26,6 +28,10 @@ class BlogAuthors < ::Middleman::Extension
       ::Middleman::BlogAuthors::AuthorPages.new(@app, self),
       false
     )
+
+    require 'middleman-blog/paginator'
+    @paginator = ::Middleman::Blog::Paginator.new(@app, self)
+    @app.sitemap.register_resource_list_manipulator(:blog_authors_paginate, @paginator)
   end
 
   helpers do

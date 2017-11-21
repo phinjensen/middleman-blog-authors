@@ -6,11 +6,28 @@ module Middleman
       end
 
       def author_permalinks
-        data.authors ? data.authors.split(',').map{|author| Middleman::BlogAuthors::AuthorPages.permalink(author)} : []
+        if data.author
+          if data.author.kind_of?(Array)
+            authors = data.author
+          else
+            authors = [data.author]
+          end
+        else
+          authors = data.authors ? data.authors.split(',') : []
+        end
+        authors.map { |author| Middleman::BlogAuthors::AuthorPages.permalink(author) }
       end
 
       def author_names
-        data.authors ? data.authors.split(',').map{|author| author.strip} : []
+        if data.author
+          if data.author.kind_of?(Array)
+            data.author
+          else
+            [data.author]
+          end
+        else
+          data.authors ? data.authors.split(',').map{ |author| author.strip } : []
+        end
       end
     end
   end
